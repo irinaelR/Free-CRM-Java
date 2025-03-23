@@ -20,34 +20,47 @@ public class AuthInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body,
                                         ClientHttpRequestExecution execution) throws IOException {
+        // Apply current token
         applyToken(request);
 
-        ClientHttpResponse response = execution.execute(request, body);
+        try {
+            ClientHttpResponse response = execution.execute(request, body);
 
-        // Handle token expiration (status code 498)
-        if (response.getStatusCode().value() == 498) {
-
-            // Try to refresh the token
-            boolean refreshed = tokenProvider.refreshToken();
-
-            if (refreshed) {
-
-                // Apply the new token and retry the request
-                applyToken(request);
-                return execution.execute(request, body);
-            } else {
-                System.out.println("Token refresh failed.");
+            // Check for unauthorized (401) or token expired (can be 401 or 498)
+            if (response.getStatusCode().value() == 401 || response.getStatusCode().value() == 498) {
+                return handleTokenExpiration(request, body, execution);
             }
-        }
 
-        return response;
+            return response;
+        } catch (Exception e) {
+            // Handle exceptions that might indicate auth issues
+            if (e.getMessage().contains("unauthorized") || e.getMessage().contains("forbidden")) {
+                return handleTokenExpiration(request, body, execution);
+            }
+            throw e;
+        }
     }
 
     private void applyToken(HttpRequest request) {
         String token = tokenProvider.getToken();
         if (token != null && !token.isEmpty()) {
             request.getHeaders().set("Authorization", "Bearer " + token);
-        } 
+        }
+    }
+
+    private ClientHttpResponse handleTokenExpiration(HttpRequest request, byte[] body,
+                                                     ClientHttpRequestExecution execution) throws IOException {
+        // Try to refresh the token
+        boolean refreshed = tokenProvider.refreshToken();
+
+        if (refreshed) {
+            // Create a new request since the original might not be reusable
+            applyToken(request);
+            return execution.execute(request, body);
+        } else {
+            // If refresh fails, let the calling code handle the authentication failure
+            throw new IOException("Authentication failed - unable to refresh token");
+        }
     }
 
 

@@ -25,9 +25,9 @@ public class AuthController {
         return authService.login(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
     }
 
-    @GetMapping("/Test")
-    public String test() {
-        String endpoint = "/Budget/GetBudgetList";
-        return apiClient.get(endpoint, String.class);
-    }
+//    @GetMapping("/Test")
+//    public String test() {
+//        String endpoint = "/Budget/GetBudgetList";
+//        return apiClient.get(endpoint, String.class);
+//    }
 }

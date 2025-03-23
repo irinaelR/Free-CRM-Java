@@ -52,9 +52,11 @@ public class AuthService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> entity = new HttpEntity<>(refreshToken, headers);
+        // Creating JSON payload in the required format
+        String jsonPayload = "{\"refreshToken\":\"" + refreshToken + "\"}";
 
-        // Make the login request with the plain RestTemplate
+        HttpEntity<String> entity = new HttpEntity<>(jsonPayload, headers);
+
         ResponseEntity<String> result = plainRestTemplate.postForEntity(
                 apiBaseUrl + "/Security/RefreshToken",
                 entity,
@@ -62,7 +64,6 @@ public class AuthService {
         );
 
         return getLoginResultDTO(result);
-
     }
 
     private LoginResultDTO getLoginResultDTO(ResponseEntity<String> result) {
