@@ -3,6 +3,7 @@ package com.crm.application.entities.budget;
 import com.crm.application.common.ApiClient;
 import com.crm.application.entities.campaign.Campaign;
 import com.crm.application.entities.common.Status;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,5 +28,14 @@ public class BudgetController {
         return apiClient.getList("/Budget/GetBudgetStatusList", Status.class);
     }
 
+    @PostMapping("/Delete")
+    public String deleteBudget(@RequestBody BudgetDeleteRequest request) throws JsonProcessingException {
+        return apiClient.post("/Budget/DeleteBudget", request);
+    }
+
+    @PostMapping("/Update")
+    public String updateBudget(@RequestBody BudgetUpdateRequest request) throws JsonProcessingException {
+        return apiClient.post("/Budget/UpdateBudget", request);
+    }
 
 }

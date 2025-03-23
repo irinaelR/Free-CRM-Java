@@ -3,6 +3,7 @@ package com.crm.application.entities.campaign;
 import com.crm.application.common.ApiClient;
 import com.crm.application.entities.common.Status;
 import com.crm.application.entities.salesteam.SalesTeam;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,5 +28,13 @@ public class CampaignController {
         return apiClient.getList("/Campaign/GetCampaignStatusList", Status.class);
     }
 
+    @PostMapping("/Update")
+    public String update(@RequestBody CampaignUpdateRequest request) throws JsonProcessingException {
+        return apiClient.post("/Campaign/UpdateCampaign", request);
+    }
 
+    @PostMapping("/Delete")
+    public String delete(@RequestBody CampaignDeleteRequest request) throws JsonProcessingException {
+        return apiClient.post("/Campaign/DeleteCampaign", request);
+    }
 }
