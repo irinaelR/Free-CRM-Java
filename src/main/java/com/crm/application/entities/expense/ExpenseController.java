@@ -23,10 +23,15 @@ public class ExpenseController {
         return Expense.getExpenseList(apiClient);
     }
 
-//    @PostMapping("/Update")
-//    public String UpdateExpense(@RequestBody Expense expense) throws JsonProcessingException {
-//        return apiClient.post("/Expense/UpdateExpense", expense);
-//    }
+    @PostMapping("/Update")
+    public String updateExpense(@RequestBody ExpenseUpdateRequest expense) throws JsonProcessingException {
+        return apiClient.post("/Expense/UpdateExpense", expense);
+    }
+
+    @PostMapping("/Delete")
+    public String deleteExpense(@RequestBody ExpenseDeleteRequest expense) throws JsonProcessingException {
+        return apiClient.post("/Expense/DeleteExpense", expense);
+    }
 
     @GetMapping("/Status")
     public List<Status> getStatus() {

@@ -33,6 +33,30 @@ public class ApiClient {
         return restTemplate.getForObject(url, responseType);
     }
 
+//    public <T> T get(String endpoint, Class<T> responseType) {
+//        String url = apiBaseUrl + endpoint;
+//
+//        ResponseEntity<Map> responseEntity = restTemplate.exchange(
+//                url,
+//                HttpMethod.GET,
+//                null,
+//                Map.class
+//        );
+//
+//        Map response = responseEntity.getBody();
+//        if (response != null && response.containsKey("content")) {
+//            Map content = (Map) response.get("content");
+//            if (content != null && content.containsKey("data")) {
+//                Map<String, Object> data = (Map<String, Object>) content.get("data");
+//                ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+//                mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//
+//                return mapper.convertValue(data, responseType);
+//            }
+//        }
+//        return null;
+//    }
+
     public <T> List<T> getList(String endpoint, Class<T> responseType) {
         String url = apiBaseUrl + endpoint;
 

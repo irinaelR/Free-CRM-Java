@@ -63,6 +63,8 @@ public class AuthService {
                 String.class
         );
 
+        System.out.println("Sent refresh token: " + result.getBody());
+
         return getLoginResultDTO(result);
     }
 

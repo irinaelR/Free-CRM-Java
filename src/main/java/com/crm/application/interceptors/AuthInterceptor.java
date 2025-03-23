@@ -1,10 +1,16 @@
 package com.crm.application.interceptors;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 import com.crm.application.auth.services.interfaces.TokenProvider;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
@@ -58,10 +64,38 @@ public class AuthInterceptor implements ClientHttpRequestInterceptor {
             applyToken(request);
             return execution.execute(request, body);
         } else {
-            // If refresh fails, let the calling code handle the authentication failure
-            throw new IOException("Authentication failed - unable to refresh token");
+            // Create a custom response that will trigger a redirect on the frontend
+            return new ClientHttpResponse() {
+                @Override
+                public HttpStatusCode getStatusCode() throws IOException {
+                    return HttpStatusCode.valueOf(401); // Unauthorized
+                }
+
+                @Override
+                public String getStatusText() throws IOException {
+                    return "Unauthorized";
+                }
+
+                @Override
+                public void close() {
+                    // Nothing to close
+                }
+
+                @Override
+                public InputStream getBody() throws IOException {
+                    // Create a JSON response body with information that your frontend can use
+                    String responseBody = "{\"error\":\"auth_failure\",\"message\":\"Authentication failed\",\"redirect\":\"/Login\"}";
+                    return new ByteArrayInputStream(responseBody.getBytes(StandardCharsets.UTF_8));
+                }
+
+                @Override
+                public HttpHeaders getHeaders() {
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    return headers;
+                }
+            };
         }
     }
-
 
 }
