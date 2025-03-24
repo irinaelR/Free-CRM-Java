@@ -2,8 +2,12 @@ package com.crm.application.entities.campaign;
 
 import com.crm.application.common.ApiClient;
 import com.crm.application.entities.budget.Budget;
+import com.crm.application.entities.budget.BudgetDeleteRequest;
 import com.crm.application.entities.common.Status;
+import com.crm.application.entities.expense.Expense;
+import com.crm.application.entities.expense.ExpenseDeleteRequest;
 import com.crm.application.entities.salesteam.SalesTeam;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -61,5 +66,31 @@ public class Campaign {
         }
 
         return campaignsPerTeam;
+    }
+
+    public static String deleteCampaign(CampaignDeleteRequest request, ApiClient apiClient) throws JsonProcessingException {
+        List<Budget> budgets = Budget.getBudgetList(apiClient);
+        budgets = budgets.stream().filter(b -> b.getCampaignId().equals(request.getId())).toList();
+
+        List<Expense> expenses = Expense.getExpenseList(apiClient);
+        expenses = expenses.stream().filter(e->e.getCampaignId().equals(request.getId())).toList();
+
+        String response = apiClient.post("/Campaign/DeleteCampaign", request);
+
+        for (Expense e : expenses) {
+            ExpenseDeleteRequest expDeleteRequest = new ExpenseDeleteRequest();
+            expDeleteRequest.setId(e.getId());
+            expDeleteRequest.setDeletedById(null);
+            apiClient.post("/Expense/DeleteExpense", expDeleteRequest);
+        }
+
+        for (Budget budget : budgets) {
+            BudgetDeleteRequest budgetDeleteRequest = new BudgetDeleteRequest();
+            budgetDeleteRequest.setId(budget.getId());
+            budgetDeleteRequest.setDeletedById(null);
+            apiClient.post("/Budget/DeleteBudget", budgetDeleteRequest);
+        }
+
+        return response;
     }
 }

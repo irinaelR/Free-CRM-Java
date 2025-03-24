@@ -35,6 +35,6 @@ public class CampaignController {
 
     @PostMapping("/Delete")
     public String delete(@RequestBody CampaignDeleteRequest request) throws JsonProcessingException {
-        return apiClient.post("/Campaign/DeleteCampaign", request);
+        return Campaign.deleteCampaign(request, apiClient);
     }
 }
