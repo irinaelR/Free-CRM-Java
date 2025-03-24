@@ -72,7 +72,8 @@ public class ApiClient {
             Map content = (Map) response.get("content");
             if (content != null && content.containsKey("data")) {
                 List<Map<String, Object>> dataList = (List<Map<String, Object>>) content.get("data");
-                ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
                 mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
                 return dataList.stream()
