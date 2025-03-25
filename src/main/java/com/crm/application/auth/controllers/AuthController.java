@@ -2,8 +2,10 @@ package com.crm.application.auth.controllers;
 
 import com.crm.application.auth.dto.LoginRequestDTO;
 import com.crm.application.auth.dto.LoginResultDTO;
+import com.crm.application.auth.dto.LogoutRequestDTO;
 import com.crm.application.auth.services.AuthService;
 import com.crm.application.common.ApiClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,11 @@ public class AuthController {
     @PostMapping("/Login")
     public LoginResultDTO login(@RequestBody LoginRequestDTO loginRequestDTO) {
         return authService.login(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
+    }
+
+    @PostMapping("/Logout")
+    public String logout(@RequestBody LogoutRequestDTO logoutRequestDTO) throws JsonProcessingException {
+        return apiClient.post("/Security/Logout", logoutRequestDTO);
     }
 
 //    @GetMapping("/Test")

@@ -4,6 +4,7 @@ import com.crm.application.common.ApiClient;
 import com.crm.application.entities.common.Status;
 import com.crm.application.entities.salesteam.SalesTeam;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +30,12 @@ public class CampaignController {
     }
 
     @PostMapping("/Update")
-    public String update(@RequestBody CampaignUpdateRequest request) throws JsonProcessingException {
-        return apiClient.post("/Campaign/UpdateCampaign", request);
+    public ResponseEntity<String> update(@RequestBody CampaignUpdateRequest request) throws Exception {
+        try {
+            return ResponseEntity.ok(request.update(apiClient));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/Delete")

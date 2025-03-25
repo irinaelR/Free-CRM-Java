@@ -4,6 +4,7 @@ import com.crm.application.common.ApiClient;
 import com.crm.application.entities.campaign.Campaign;
 import com.crm.application.entities.common.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -34,8 +35,12 @@ public class BudgetController {
     }
 
     @PostMapping("/Update")
-    public String updateBudget(@RequestBody BudgetUpdateRequest request) throws JsonProcessingException {
-        return apiClient.post("/Budget/UpdateBudget", request);
+    public ResponseEntity<String> updateBudget(@RequestBody BudgetUpdateRequest request) throws Exception {
+        try {
+            return ResponseEntity.ok(request.update(apiClient));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }

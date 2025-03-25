@@ -73,7 +73,7 @@ public class Campaign {
         budgets = budgets.stream().filter(b -> b.getCampaignId().equals(request.getId())).toList();
 
         List<Expense> expenses = Expense.getExpenseList(apiClient);
-        expenses = expenses.stream().filter(e->e.getCampaignId().equals(request.getId())).toList();
+        expenses = expenses.stream().filter(e -> e.getCampaignId().equals(request.getId())).toList();
 
         String response = apiClient.post("/Campaign/DeleteCampaign", request);
 
