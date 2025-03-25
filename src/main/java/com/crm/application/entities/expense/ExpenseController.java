@@ -5,6 +5,7 @@ import com.crm.application.entities.common.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Map;
@@ -24,8 +25,12 @@ public class ExpenseController {
     }
 
     @PostMapping("/Update")
-    public String updateExpense(@RequestBody ExpenseUpdateRequest expense) throws JsonProcessingException {
-        return apiClient.post("/Expense/UpdateExpense", expense);
+    public ResponseEntity<String> updateExpense(@RequestBody ExpenseUpdateRequest expense) throws Exception {
+        try {
+            return ResponseEntity.ok(expense.update(apiClient));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/Delete")

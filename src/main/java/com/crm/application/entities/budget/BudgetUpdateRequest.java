@@ -1,5 +1,6 @@
 package com.crm.application.entities.budget;
 
+import com.crm.application.common.ApiClient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +17,11 @@ public class BudgetUpdateRequest {
     double amount;
     String campaignId;
     String updatedById;
+
+    public String update(ApiClient apiClient) throws Exception {
+        if(this.amount <= 0) {
+            throw new Exception("Amount must be greater than 0");
+        }
+        return apiClient.post("/Budget/UpdateBudget", this);
+    }
 }
