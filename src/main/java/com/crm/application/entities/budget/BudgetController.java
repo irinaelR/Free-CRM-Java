@@ -1,15 +1,12 @@
 package com.crm.application.entities.budget;
 
 import com.crm.application.common.ApiClient;
-import com.crm.application.entities.campaign.Campaign;
 import com.crm.application.entities.common.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/Budget")
@@ -42,5 +39,6 @@ public class BudgetController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
 }

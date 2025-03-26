@@ -19,7 +19,10 @@ public class AlertConfig {
         return apiClient.get("/AlertConfig/GetAlertConfig", AlertConfig.class);
     }
 
-    public static String updateAlertConfig(AlertConfig alertConfig, ApiClient apiClient) throws JsonProcessingException {
+    public static String updateAlertConfig(AlertConfig alertConfig, ApiClient apiClient) throws Exception {
+        if(alertConfig.getPercentage() <= 0) {
+            throw new Exception("Percentage must be greater than 0");
+        }
         AlertConfigRequest request = new AlertConfigRequest();
         request.setPercentage(alertConfig.getPercentage());
         request.setId(alertConfig.getId());

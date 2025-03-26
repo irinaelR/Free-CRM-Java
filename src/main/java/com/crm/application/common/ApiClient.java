@@ -86,7 +86,6 @@ public class ApiClient {
 
     public <T> String post(String endpoint, T body) throws JsonProcessingException {
         String url = apiBaseUrl + endpoint;
-        // System.out.println("Request body: " + body.toString());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

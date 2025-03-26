@@ -2,6 +2,7 @@ package com.crm.application.entities.alert;
 
 import com.crm.application.common.ApiClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +20,11 @@ public class AlertConfigController {
     }
 
     @PostMapping("Update")
-    public String updateAlertConfig(@RequestBody AlertConfig alertConfig) throws JsonProcessingException {
-        return AlertConfig.updateAlertConfig(alertConfig, apiClient);
+    public ResponseEntity<String> updateAlertConfig(@RequestBody AlertConfig alertConfig) throws JsonProcessingException {
+        try {
+            return ResponseEntity.ok(AlertConfig.updateAlertConfig(alertConfig, apiClient));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
